@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: podinfo
@@ -10,7 +10,4 @@ spec:
   values:
     ingress:
       hosts:
-        - host: podinfo.production
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
+        - podinfo.production
