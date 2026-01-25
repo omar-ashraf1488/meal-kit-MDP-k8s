@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chefbot-sim
+  namespace: chefbot-sim
+  labels:
+    app: chefbot-sim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chefbot-sim
+  template:
+    metadata:
+      labels:
+        app: chefbot-sim
+    spec:
+      containers:
+        - name: chefbot-sim
+          image: ghcr.io/omar-ashraf1488/chefbot-sim:v0.0.1
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
