@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: chefbot-sim
-          image: ghcr.io/omar-ashraf1488/chefbot-sim:v0.0.1
+          image: ghcr.io/omar-ashraf1488/chefbot-sim:v0.0.2
           ports:
             - name: http
               containerPort: 8080
