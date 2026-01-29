@@ -46,6 +46,12 @@ spec:
     # Use single binary mode (not distributed)
     singleBinary:
       replicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
     # Disable distributed components
     read:
       replicas: 0
