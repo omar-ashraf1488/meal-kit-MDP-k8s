@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chefbot-sim
+  namespace: chefbot-sim
+data:
+  # App Config
+  ENVIRONMENT: "development"
+  LOG_LEVEL: "DEBUG"
+  # Scheduler
+  SCHEDULER_ENABLED: "true"
+  # User Generation
+  USER_GENERATION_ENABLED: "true"
+  USER_GENERATION_COUNT: "0"
+  USER_GENERATION_INTERVAL: "0"
+  # Recipe Generation
+  RECIPE_GENERATION_ENABLED: "true"
+  RECIPE_GENERATION_COUNT: "0"
+  RECIPE_GENERATION_INTERVAL: "0"
+  # Subscription Generation
+  SUBSCRIPTION_GENERATION_COUNT: "0"
+  SUBSCRIPTION_GENERATION_INTERVAL: "0"
+  # Order Generation
+  ORDER_GENERATION_ENABLED: "true"
+  ORDER_GENERATION_COUNT: "0"
+  ORDER_GENERATION_INTERVAL: "0"
+  # Delivery Generation
+  DELIVERY_GENERATION_COUNT: "0"
+  DELIVERY_GENERATION_INTERVAL: "0"
