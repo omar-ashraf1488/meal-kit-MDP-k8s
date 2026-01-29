@@ -21,6 +21,11 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: chefbot-sim
+            - secretRef:
+                name: postgresql
           resources:
             requests:
               memory: "64Mi"

@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chefbot-sim
+  namespace: chefbot-sim
+data:
+  # Database
+  POSTGRES_SERVER: postgresql
+  POSTGRES_PORT: "5432"
+  # App Config
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
+  # Scheduler
+  SCHEDULER_ENABLED: "false"
+  SCHEDULER_TIMEZONE: "UTC"
+  # User Generation
+  USER_GENERATION_ENABLED: "false"
+  USER_GENERATION_COUNT: "1"
+  USER_GENERATION_INTERVAL: "60"
+  # Recipe Generation
+  RECIPE_GENERATION_ENABLED: "false"
+  RECIPE_GENERATION_COUNT: "1"
+  RECIPE_GENERATION_INTERVAL: "60"
+  # Subscription Generation
+  SUBSCRIPTION_GENERATION_COUNT: "1"
+  SUBSCRIPTION_GENERATION_INTERVAL: "60"
+  # Order Generation
+  ORDER_GENERATION_ENABLED: "false"
+  ORDER_GENERATION_COUNT: "1"
+  ORDER_GENERATION_INTERVAL: "60"
+  # Delivery Generation
+  DELIVERY_GENERATION_COUNT: "1"
+  DELIVERY_GENERATION_INTERVAL: "60"
