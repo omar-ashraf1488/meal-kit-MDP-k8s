@@ -61,6 +61,9 @@ spec:
       replicas: 0
     backend:
       replicas: 0
+    # Disable anti-affinity for single-node development cluster
+    gateway:
+      affinity: {}
     # Disable caching (not needed for dev, saves memory)
     chunksCache:
       enabled: false
