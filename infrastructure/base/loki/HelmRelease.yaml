@@ -59,3 +59,18 @@ spec:
       replicas: 0
     backend:
       replicas: 0
+    # Disable caching (not needed for dev, saves memory)
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
+    # Disable extra components for dev
+    lokiCanary:
+      enabled: false
+    test:
+      enabled: false
+    monitoring:
+      selfMonitoring:
+        enabled: false
+      lokiCanary:
+        enabled: false
