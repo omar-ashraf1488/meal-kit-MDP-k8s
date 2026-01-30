@@ -1,0 +1,53 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: prometheus
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: ">=65.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: prometheus
+      interval: 1h
+  values:
+    # Disable Grafana - we already have one installed
+    grafana:
+      enabled: false
+    # Prometheus configuration
+    prometheus:
+      prometheusSpec:
+        # Resource limits for development
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 1Gi
+        # Retention - keep metrics for 7 days
+        retention: 7d
+        # Storage - use emptyDir for development (data lost on restart)
+        storageSpec: {}
+        # Disable anti-affinity for single-node cluster
+        podAntiAffinity: ""
+    # Alertmanager configuration
+    alertmanager:
+      alertmanagerSpec:
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+        # Disable anti-affinity for single-node cluster
+        podAntiAffinity: ""
+    # Node exporter - collects node metrics (CPU, memory, disk)
+    nodeExporter:
+      enabled: true
+    # Kube-state-metrics - collects Kubernetes object metrics
+    kubeStateMetrics:
+      enabled: true
