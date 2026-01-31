@@ -11,3 +11,4 @@ resources:
   - kafka-nodepool.yaml
   - kafka-cluster.yaml
   - kafka-topics.yaml
+  - kafka-podmonitor.yaml
