@@ -21,7 +21,7 @@ jobs:
           version: v0.30.0
           node_image: kindest/node:v1.33.4
       - name: Install Flux in Kubernetes Kind
-        run: flux install --components-extra source-watcher
+        run: flux install --components-extra image-reflector-controller,image-automation-controller
       - name: Setup cluster reconciliation
         run: |
           flux create source git flux-system \
