@@ -8,5 +8,6 @@ resources:
   - strimzi-helm-repo.yaml
   - strimzi-operator.yaml
   - kafka-metrics-configmap.yaml
+  - kafka-nodepool.yaml
   - kafka-cluster.yaml
   - kafka-topics.yaml

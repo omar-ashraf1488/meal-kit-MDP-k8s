@@ -6,7 +6,7 @@ metadata:
   name: test
   namespace: kafka
   labels:
-    strimzi.io/cluster: mdp-kafka
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 3
   replicas: 1

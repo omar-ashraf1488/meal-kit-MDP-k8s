@@ -6,7 +6,6 @@ metadata:
 spec:
   kafka:
     version: 4.1.1
-    replicas: 1  # Single replica for development
 
     listeners:
       - name: plain
@@ -33,20 +32,6 @@ spec:
 
       # Enable auto topic creation for Debezium
       auto.create.topics.enable: true
-
-    storage:
-      type: persistent-claim
-      size: 10Gi
-      class: standard  # minikube
-      deleteClaim: true
-
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "250m"
-      limits:
-        memory: "1Gi"
-        cpu: "1000m"
 
     # Metrics for Prometheus
     metricsConfig:
