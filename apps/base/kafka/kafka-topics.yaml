@@ -1,0 +1,15 @@
+# Test topic for Kafka testing
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: test
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: mdp-kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: 604800000  # 7 days
+    cleanup.policy: delete

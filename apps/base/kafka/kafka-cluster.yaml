@@ -1,0 +1,83 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: mdp-kafka
+  namespace: kafka
+  annotations:
+    strimzi.io/kraft: enabled
+spec:
+  kafka:
+    version: 4.1.1
+    replicas: 1  # Single replica for development
+
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+
+    config:
+      # Replication settings (1 for dev, 3 for prod)
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      default.replication.factor: 1
+      min.insync.replicas: 1
+
+      # Performance tuning
+      num.partitions: 3
+      log.retention.hours: 168  # 7 days
+      log.segment.bytes: 1073741824  # 1GB
+
+      # Enable auto topic creation for Debezium
+      auto.create.topics.enable: true
+
+    storage:
+      type: persistent-claim
+      size: 10Gi
+      class: standard  # minikube
+      deleteClaim: true
+
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "1000m"
+
+    # Metrics for Prometheus
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: kafka-metrics-config.yml
+
+  # KRaft mode (no Zookeeper)
+  zookeeper:
+    replicas: 0  # Not needed with KRaft
+    storage:
+      type: ephemeral
+
+  entityOperator:
+    topicOperator:
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "50m"
+        limits:
+          memory: "256Mi"
+          cpu: "250m"
+    userOperator:
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "50m"
+        limits:
+          memory: "256Mi"
+          cpu: "250m"
