@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  name: mdp-kafka
+  name: kafka-cluster
   namespace: kafka
   annotations:
     strimzi.io/kraft: enabled
@@ -58,11 +58,14 @@ spec:
           name: kafka-metrics
           key: kafka-metrics-config.yml
 
-  # KRaft mode (no Zookeeper)
-  zookeeper:
-    replicas: 0  # Not needed with KRaft
+  # KRaft controller (replaces Zookeeper)
+  kraftController:
+    replicas: 1
     storage:
-      type: ephemeral
+      type: persistent-claim
+      size: 5Gi
+      class: standard
+      deleteClaim: true
 
   entityOperator:
     topicOperator:
