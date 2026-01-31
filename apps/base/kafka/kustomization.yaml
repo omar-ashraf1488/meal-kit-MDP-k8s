@@ -5,6 +5,7 @@ namespace: kafka
 
 resources:
   - namespace.yaml
+  - strimzi-helm-repo.yaml
   - strimzi-operator.yaml
   - kafka-metrics-configmap.yaml
   - kafka-cluster.yaml

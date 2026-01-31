@@ -1,13 +1,3 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: strimzi
-  namespace: flux-system
-spec:
-  interval: 24h
-  url: https://strimzi.io/charts/
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -22,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: strimzi
-        namespace: flux-system
+        namespace: kafka
   values:
     # Watch all namespaces for Kafka resources
     watchAnyNamespace: true
