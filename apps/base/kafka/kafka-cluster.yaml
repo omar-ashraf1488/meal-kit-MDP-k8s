@@ -3,8 +3,6 @@ kind: Kafka
 metadata:
   name: kafka-cluster
   namespace: kafka
-  annotations:
-    strimzi.io/kraft: enabled
 spec:
   kafka:
     version: 4.1.1
@@ -57,15 +55,6 @@ spec:
         configMapKeyRef:
           name: kafka-metrics
           key: kafka-metrics-config.yml
-
-  # KRaft controller (replaces Zookeeper)
-  kraftController:
-    replicas: 1
-    storage:
-      type: persistent-claim
-      size: 5Gi
-      class: standard
-      deleteClaim: true
 
   entityOperator:
     topicOperator:
