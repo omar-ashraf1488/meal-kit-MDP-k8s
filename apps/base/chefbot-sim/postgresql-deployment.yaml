@@ -24,9 +24,19 @@ spec:
           envFrom:
             - secretRef:
                 name: postgresql
+          # Custom command to load CDC config
+          args:
+            - "-c"
+            - "config_file=/etc/postgresql/postgresql.conf"
+            - "-c"
+            - "hba_file=/etc/postgresql/pg_hba.conf"
           volumeMounts:
             - name: postgresql-data
               mountPath: /var/lib/postgresql/data
+            # Mount custom CDC config
+            - name: postgresql-config
+              mountPath: /etc/postgresql
+              readOnly: true
           resources:
             requests:
               memory: "128Mi"
@@ -38,3 +48,7 @@ spec:
         - name: postgresql-data
           persistentVolumeClaim:
             claimName: postgresql-data
+        # ConfigMap with CDC settings
+        - name: postgresql-config
+          configMap:
+            name: postgresql-config

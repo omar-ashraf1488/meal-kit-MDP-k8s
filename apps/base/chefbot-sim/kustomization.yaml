@@ -11,3 +11,10 @@ resources:
   - image-repository.yaml
   - service.yaml
   - ingress.yaml
+
+# Generate ConfigMap
+configMapGenerator:
+  - name: postgresql-config
+    files:
+      - postgresql-cdc-config/postgresql.conf
+      - postgresql-cdc-config/pg_hba.conf
