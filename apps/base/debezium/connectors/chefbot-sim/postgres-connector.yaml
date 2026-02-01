@@ -1,0 +1,117 @@
+---
+# ============================================================================
+# DEBEZIUM POSTGRESQL CONNECTOR
+# ============================================================================
+#
+# This connector watches the PostgreSQL database and captures all changes
+# (INSERT, UPDATE, DELETE) from the specified tables.
+#
+# HOW IT WORKS:
+# 1. Connects to PostgreSQL using the provided credentials
+# 2. Creates a replication slot (to track position in WAL)
+# 3. Reads changes from the Write-Ahead Log (WAL)
+# 4. Transforms changes to Kafka events
+# 5. Publishes to Kafka topics (one topic per table)
+#
+# TOPIC NAMING:
+# {topic.prefix}.{schema}.{table}
+# Example: postgres.public.orders
+#
+# ============================================================================
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: postgres-connector
+  namespace: debezium
+  labels:
+    # IMPORTANT: Must match the KafkaConnect cluster name
+    strimzi.io/cluster: mdp-connect
+    app.kubernetes.io/name: postgres-connector
+    app.kubernetes.io/component: connector
+    app.kubernetes.io/part-of: debezium
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector
+  tasksMax: 1
+
+  config:
+    # ========================================
+    # DATABASE CONNECTION
+    # ========================================
+    database.hostname: postgresql.chefbot-sim.svc.cluster.local
+    database.port: "5432"
+    database.user: postgres
+    database.password: postgres
+    database.dbname: chefbot
+
+    # ========================================
+    # DEBEZIUM SETTINGS
+    # ========================================
+
+    # Unique name for this connector (used in replication slot name)
+    topic.prefix: postgres
+
+    # Plugin for decoding WAL (pgoutput is built into PostgreSQL 10+)
+    plugin.name: pgoutput
+
+    # Replication slot name (Debezium creates this automatically)
+    slot.name: debezium_slot
+
+    # Publication name for logical replication
+    publication.name: dbz_publication
+
+    # ========================================
+    # WHAT TO CAPTURE
+    # ========================================
+
+    # Which schemas to include (comma-separated)
+    schema.include.list: public
+
+    # Which tables to capture (comma-separated)
+    # Format: schema.table
+    table.include.list: public.users,public.orders,public.subscriptions,public.deliveries,public.recipes
+
+    # ========================================
+    # SNAPSHOT SETTINGS
+    # ========================================
+
+    # What to do on first run:
+    # - initial: Take full snapshot, then stream changes
+    # - never: Only stream changes (skip existing data)
+    # - when_needed: Snapshot if no offset found
+    snapshot.mode: initial
+
+    # ========================================
+    # EVENT SETTINGS
+    # ========================================
+
+    # Include full row data in UPDATE events (before + after)
+    # Requires: ALTER TABLE xxx REPLICA IDENTITY FULL
+    include.schema.changes: "true"
+
+    # How to handle decimal numbers
+    decimal.handling.mode: double
+
+    # Timezone for timestamps
+    time.precision.mode: adaptive_time_microseconds
+
+    # ========================================
+    # TOPIC SETTINGS
+    # ========================================
+
+    # Number of partitions for auto-created topics
+    topic.creation.default.partitions: 3
+    topic.creation.default.replication.factor: 1
+
+    # ========================================
+    # HEARTBEAT (keeps replication slot active)
+    # ========================================
+    heartbeat.interval.ms: "10000"
+    heartbeat.topics.prefix: __debezium-heartbeat
+
+    # ========================================
+    # ERROR HANDLING
+    # ========================================
+    errors.tolerance: none
+    errors.log.enable: "true"
+    errors.log.include.messages: "true"

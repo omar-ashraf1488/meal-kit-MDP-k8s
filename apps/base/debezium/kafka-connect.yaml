@@ -1,0 +1,93 @@
+---
+# Kafka Connect cluster with Debezium plugins
+# Uses pre-built Debezium image for simplicity
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: mdp-connect
+  namespace: debezium
+  annotations:
+    # Enable KafkaConnector resources (IMPORTANT!)
+    # This allows us to create connectors via KafkaConnector CRD
+    strimzi.io/use-connector-resources: "true"
+spec:
+  version: 4.1.1
+  replicas: 1
+
+  # Bootstrap servers (internal Kafka)
+  bootstrapServers: kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+
+  # Use pre-built Debezium image (includes all connectors)
+  image: quay.io/debezium/connect:2.5
+
+  # Kafka Connect configuration
+  config:
+    # ========================================
+    # CONVERTERS: How data is serialized
+    # ========================================
+    # JsonConverter = human-readable JSON (good for debugging)
+    # AvroConverter = compact binary (good for production)
+    key.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable: true
+    value.converter.schemas.enable: true
+
+    # ========================================
+    # INTERNAL TOPICS: Where Connect stores state
+    # ========================================
+    # These topics store connector offsets, configs, and status
+    # Debezium uses these to track its position in the WAL
+
+    # Offset storage: Stores the LSN position Debezium has read up to
+    offset.storage.topic: connect-cluster-offsets
+    offset.storage.replication.factor: 1
+    offset.storage.partitions: 25
+
+    # Config storage: Stores connector configurations
+    config.storage.topic: connect-cluster-configs
+    config.storage.replication.factor: 1
+
+    # Status storage: Stores connector status (running, failed, etc.)
+    status.storage.topic: connect-cluster-status
+    status.storage.replication.factor: 1
+    status.storage.partitions: 5
+
+    # ========================================
+    # OTHER SETTINGS
+    # ========================================
+    group.id: mdp-connect-cluster
+    connector.client.config.override.policy: All
+
+  # Resources
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+  # Logging
+  logging:
+    type: inline
+    loggers:
+      connect.root.logger.level: INFO
+      # Enable debug logging for Debezium
+      log4j.logger.io.debezium: DEBUG
+      log4j.logger.io.debezium.connector.postgresql: DEBUG
+
+  # JMX Metrics for Prometheus
+  metricsConfig:
+    type: jmxPrometheusExporter
+    valueFrom:
+      configMapKeyRef:
+        name: kafka-connect-metrics
+        key: metrics-config.yml
+
+  # Probes
+  readinessProbe:
+    initialDelaySeconds: 60
+    timeoutSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 60
+    timeoutSeconds: 10

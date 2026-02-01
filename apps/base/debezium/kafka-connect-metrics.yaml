@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-connect-metrics
+  namespace: debezium
+data:
+  metrics-config.yml: |
+    # JMX Exporter configuration for Kafka Connect
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    rules:
+      # Kafka Connect worker metrics
+      - pattern: kafka.connect<type=connect-worker-metrics>([^:]+):
+        name: kafka_connect_worker_$1
+        type: GAUGE
+
+      # Connector task metrics
+      - pattern: kafka.connect<type=connector-task-metrics, connector=([^,]+), task=([^,]+)><>([^:]+)
+        name: kafka_connect_connector_task_$3
+        type: GAUGE
+        labels:
+          connector: $1
+          task: $2
+
+      # Source task metrics (Debezium)
+      - pattern: kafka.connect<type=source-task-metrics, connector=([^,]+), task=([^,]+)><>([^:]+)
+        name: kafka_connect_source_task_$3
+        type: GAUGE
+        labels:
+          connector: $1
+          task: $2
+
+      # Debezium specific metrics
+      - pattern: debezium.([^:]+)<type=connector-metrics, context=([^,]+), server=([^,]+)><>([^:]+)
+        name: debezium_$1_$4
+        type: GAUGE
+        labels:
+          context: $2
+          server: $3
+
+      - pattern: debezium.([^:]+)<type=connector-metrics, context=([^,]+), server=([^,]+), table=([^,]+)><>([^:]+)
+        name: debezium_$1_$5
+        type: GAUGE
+        labels:
+          context: $2
+          server: $3
+          table: $4

@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: debezium
+
+resources:
+  # Core Debezium/Kafka Connect infrastructure
+  - namespace.yaml
+  - kafka-connect-metrics.yaml
+  - kafka-connect.yaml
+  # All connectors
+  - connectors/
