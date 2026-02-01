@@ -5,43 +5,68 @@ metadata:
   namespace: debezium
 data:
   metrics-config.yml: |
-    # JMX Exporter configuration for Kafka Connect
+    # Based on official Strimzi example:
+    # https://github.com/strimzi/strimzi-kafka-operator/blob/main/examples/metrics/kafka-connect-metrics.yaml
     lowercaseOutputName: true
     lowercaseOutputLabelNames: true
     rules:
       # Kafka Connect worker metrics
-      - pattern: "kafka.connect<type=connect-worker-metrics>([^:]+):"
+      - pattern: kafka.connect<type=connect-worker-metrics><>([a-z-]+-total)
         name: kafka_connect_worker_$1
+        help: "Kafka Connect JMX metric worker"
+        type: COUNTER
+      - pattern: kafka.connect<type=connect-worker-metrics><>([a-z-]+)
+        name: kafka_connect_worker_$1
+        help: "Kafka Connect JMX metric worker"
+        type: GAUGE
+
+      # Kafka Connect worker metrics per connector
+      - pattern: kafka.connect<type=connect-worker-metrics, connector=(.+)><>([a-z-]+)
+        name: kafka_connect_worker_$2
+        labels:
+          connector: "$1"
+        help: "Kafka Connect JMX metric $1"
         type: GAUGE
 
       # Connector task metrics
-      - pattern: "kafka.connect<type=connector-task-metrics, connector=([^,]+), task=([^,]+)><>([^:]+)"
-        name: kafka_connect_connector_task_$3
-        type: GAUGE
+      - pattern: kafka.connect<type=(.+)-metrics, connector=(.+), task=(.+)><>(.+-total)
+        name: kafka_connect_$1_$4
         labels:
-          connector: $1
-          task: $2
+          connector: "$2"
+          task: "$3"
+        help: "Kafka Connect JMX metric type $1"
+        type: COUNTER
+      - pattern: kafka.connect<type=(.+)-metrics, connector=(.+), task=(.+)><>(.+-count|.+-ms|.+-ratio|.+-rate|.+-max|.+-avg|.+-failures|.+-errors|.+-retries|.+-skipped)
+        name: kafka_connect_$1_$4
+        labels:
+          connector: "$2"
+          task: "$3"
+        help: "Kafka Connect JMX metric type $1"
+        type: GAUGE
 
-      # Source task metrics (Debezium)
-      - pattern: "kafka.connect<type=source-task-metrics, connector=([^,]+), task=([^,]+)><>([^:]+)"
-        name: kafka_connect_source_task_$3
-        type: GAUGE
+      # Connector task status
+      - pattern: 'kafka.connect<type=connector-task-metrics, connector=(.+), task=(.+)><>status: ([a-z-]+)'
+        name: kafka_connect_connector_task_status
+        value: 1
         labels:
-          connector: $1
-          task: $2
+          connector: "$1"
+          task: "$2"
+          status: "$3"
+        help: "Kafka Connect JMX Connector task status"
+        type: GAUGE
 
-      # Debezium specific metrics
-      - pattern: "debezium.([^:]+)<type=connector-metrics, context=([^,]+), server=([^,]+)><>([^:]+)"
-        name: debezium_$1_$4
+      # Worker rebalance metrics
+      - pattern: kafka.connect<type=connect-worker-rebalance-metrics><>([a-z-]+-total)
+        name: kafka_connect_worker_rebalance_$1
+        help: "Kafka Connect JMX metric rebalance information"
+        type: COUNTER
+      - pattern: kafka.connect<type=connect-worker-rebalance-metrics><>([a-z-]+)
+        name: kafka_connect_worker_rebalance_$1
+        help: "Kafka Connect JMX metric rebalance information"
         type: GAUGE
-        labels:
-          context: $2
-          server: $3
 
-      - pattern: "debezium.([^:]+)<type=connector-metrics, context=([^,]+), server=([^,]+), table=([^,]+)><>([^:]+)"
-        name: debezium_$1_$5
+      # Coordinator metrics
+      - pattern: kafka.connect<type=connect-coordinator-metrics><>(assigned-connectors|assigned-tasks)
+        name: kafka_connect_coordinator_$1
+        help: "Kafka Connect JMX metric assignment information"
         type: GAUGE
-        labels:
-          context: $2
-          server: $3
-          table: $4
