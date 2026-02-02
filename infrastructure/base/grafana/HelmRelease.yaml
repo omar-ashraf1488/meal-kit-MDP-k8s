@@ -17,3 +17,12 @@ spec:
   values:
     adminUser: admin
     adminPassword: admin
+
+    # Resource limits (recommended: requests = limits for memory)
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
