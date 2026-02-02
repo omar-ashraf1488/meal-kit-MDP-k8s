@@ -36,9 +36,12 @@ spec:
       # Retention - auto-delete logs after 24 hours
       limits_config:
         retention_period: 24h
-      # Two replicas for memberlist ring coordination
+      # Single replica with inmemory kvstore for dev
       commonConfig:
-        replication_factor: 2
+        replication_factor: 1
+        ring:
+          kvstore:
+            store: inmemory
       # Compactor handles log deletion
       compactor:
         retention_enabled: true
@@ -47,7 +50,7 @@ spec:
         compaction_interval: 10m
     # Use single binary mode (not distributed)
     singleBinary:
-      replicas: 2
+      replicas: 1
       resources:
         requests:
           cpu: 100m
