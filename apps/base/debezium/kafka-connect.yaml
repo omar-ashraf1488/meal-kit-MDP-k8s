@@ -67,14 +67,19 @@ spec:
     group.id: mdp-connect-cluster
     connector.client.config.override.policy: All
 
-  # Resources
+  # Resources (increased to prevent OOMKilled - JVM needs heap + metaspace + native)
   resources:
     requests:
-      memory: "1Gi"
+      memory: "1.5Gi"
       cpu: "250m"
     limits:
-      memory: "2Gi"
+      memory: "3Gi"
       cpu: "1000m"
+
+  # JVM options to control memory more precisely
+  jvmOptions:
+    -Xms: 1g
+    -Xmx: 2g
 
   # Logging - reduced to INFO to save memory
   logging:
