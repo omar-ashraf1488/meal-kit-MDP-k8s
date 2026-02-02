@@ -76,22 +76,21 @@ spec:
       memory: "2Gi"
       cpu: "1000m"
 
-  # Logging
+  # Logging - reduced to INFO to save memory
   logging:
     type: inline
     loggers:
       connect.root.logger.level: INFO
-      # Enable debug logging for Debezium
-      log4j.logger.io.debezium: DEBUG
-      log4j.logger.io.debezium.connector.postgresql: DEBUG
+      log4j.logger.io.debezium: INFO
+      log4j.logger.io.debezium.connector.postgresql: INFO
 
-  # JMX Metrics for Prometheus
-  metricsConfig:
-    type: jmxPrometheusExporter
-    valueFrom:
-      configMapKeyRef:
-        name: kafka-connect-metrics
-        key: metrics-config.yml
+  # JMX Metrics disabled to save memory
+  # metricsConfig:
+  #   type: jmxPrometheusExporter
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: kafka-connect-metrics
+  #       key: metrics-config.yml
 
   # Template for pod customization
   template:
