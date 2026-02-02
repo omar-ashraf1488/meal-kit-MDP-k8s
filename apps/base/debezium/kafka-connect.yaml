@@ -76,11 +76,6 @@ spec:
       memory: "8Gi"
       cpu: "1000m"
 
-  # JVM options - 6Gi heap max, 2Gi for native/metaspace
-  jvmOptions:
-    -Xms: 1g
-    -Xmx: 6g
-
   # Logging - reduced to INFO to save memory
   logging:
     type: inline
