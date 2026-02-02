@@ -76,6 +76,11 @@ spec:
       memory: "8Gi"
       cpu: "1000m"
 
+  # JVM - Debezium official recommended settings (from Docker image docs)
+  jvmOptions:
+    -Xms: 256m
+    -Xmx: 2g
+
   # Logging - reduced to INFO to save memory
   logging:
     type: inline
