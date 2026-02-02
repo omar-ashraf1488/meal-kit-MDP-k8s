@@ -68,12 +68,13 @@ spec:
     connector.client.config.override.policy: All
 
   # Resources - requests=limits for Java (Strimzi best practice)
+  # 4Gi is sufficient for 2Gi heap + metaspace + threads + native memory
   resources:
     requests:
-      memory: "8Gi"
+      memory: "4Gi"
       cpu: "250m"
     limits:
-      memory: "8Gi"
+      memory: "4Gi"
       cpu: "1000m"
 
   # JVM - Debezium official recommended settings (from Docker image docs)
