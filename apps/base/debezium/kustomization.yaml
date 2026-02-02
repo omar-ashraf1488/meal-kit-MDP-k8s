@@ -6,6 +6,7 @@ namespace: debezium
 resources:
   # Core Debezium/Kafka Connect infrastructure
   - namespace.yaml
+  - ghcr-sealed-secret.yaml
   - kafka-connect-metrics.yaml
   - kafka-connect.yaml
   # All connectors
