@@ -36,9 +36,9 @@ spec:
       # Retention - auto-delete logs after 24 hours
       limits_config:
         retention_period: 24h
-      # Single replica for development
+      # Two replicas for memberlist ring coordination
       commonConfig:
-        replication_factor: 1
+        replication_factor: 2
       # Compactor handles log deletion
       compactor:
         retention_enabled: true
@@ -47,7 +47,7 @@ spec:
         compaction_interval: 10m
     # Use single binary mode (not distributed)
     singleBinary:
-      replicas: 1
+      replicas: 2
       resources:
         requests:
           cpu: 100m
