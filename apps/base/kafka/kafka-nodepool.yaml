@@ -17,7 +17,7 @@ spec:
     deleteClaim: true
   resources:
     requests:
-      memory: "1Gi"
+      memory: "2Gi"
       cpu: "250m"
     limits:
       memory: "2Gi"
