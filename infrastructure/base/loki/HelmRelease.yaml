@@ -53,7 +53,7 @@ spec:
           cpu: 100m
           memory: 256Mi
         limits:
-          memory: 1Gi
+          memory: 512Mi
     # Disable distributed components
     read:
       replicas: 0
