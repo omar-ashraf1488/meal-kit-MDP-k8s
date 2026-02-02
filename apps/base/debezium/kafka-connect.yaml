@@ -93,6 +93,12 @@ spec:
         name: kafka-connect-metrics
         key: metrics-config.yml
 
+  # Template for pod customization
+  template:
+    pod:
+      imagePullSecrets:
+        - name: ghcr-credentials
+
   # Probes
   readinessProbe:
     initialDelaySeconds: 60
