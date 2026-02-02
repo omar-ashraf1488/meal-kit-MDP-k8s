@@ -67,19 +67,19 @@ spec:
     group.id: mdp-connect-cluster
     connector.client.config.override.policy: All
 
-  # Resources (Debezium recommended: 2Gi request, 4Gi limit)
+  # Resources (increased to 8Gi for stable startup)
   resources:
     requests:
       memory: "2Gi"
       cpu: "250m"
     limits:
-      memory: "4Gi"
+      memory: "8Gi"
       cpu: "1000m"
 
-  # JVM options - leave 1Gi headroom for non-heap (metaspace, native)
+  # JVM options - 6Gi heap max, 2Gi for native/metaspace
   jvmOptions:
     -Xms: 1g
-    -Xmx: 3g
+    -Xmx: 6g
 
   # Logging - reduced to INFO to save memory
   logging:
