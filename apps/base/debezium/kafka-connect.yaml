@@ -67,10 +67,10 @@ spec:
     group.id: mdp-connect-cluster
     connector.client.config.override.policy: All
 
-  # Resources (increased to 8Gi for stable startup)
+  # Resources - requests=limits for Java (Strimzi best practice)
   resources:
     requests:
-      memory: "2Gi"
+      memory: "8Gi"
       cpu: "250m"
     limits:
       memory: "8Gi"
