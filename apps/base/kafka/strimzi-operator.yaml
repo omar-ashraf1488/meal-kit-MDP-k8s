@@ -17,14 +17,19 @@ spec:
     # Watch all namespaces for Kafka resources
     watchAnyNamespace: true
 
-    # Resource limits for the operator
+    # Resource limits for the operator (increased to prevent OOMKilled)
     resources:
       requests:
-        memory: "256Mi"
+        memory: "384Mi"
         cpu: "100m"
       limits:
-        memory: "512Mi"
+        memory: "768Mi"
         cpu: "500m"
+
+    # JVM tuning for memory efficiency
+    extraEnvs:
+      - name: JAVA_OPTS
+        value: "-XX:MinRAMPercentage=25 -XX:MaxRAMPercentage=70"
 
     # Enable leader election for HA (disabled for single-node dev)
     leaderElection:
