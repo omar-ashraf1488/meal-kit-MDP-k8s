@@ -1,6 +1,6 @@
 ---
 # Kafka Connect cluster with Debezium plugins
-# Uses pre-built Debezium image for simplicity
+# Strimzi builds the image with Debezium connectors
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnect
 metadata:
@@ -17,8 +17,17 @@ spec:
   # Bootstrap servers (internal Kafka)
   bootstrapServers: kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
 
-  # Use pre-built Debezium image (includes all connectors)
-  image: quay.io/debezium/connect:2.5
+  # Build Kafka Connect image with Debezium plugins
+  build:
+    output:
+      type: docker
+      image: ghcr.io/omar-ashraf1488/kafka-connect-debezium:2.5.0
+      pushSecret: ghcr-credentials
+    plugins:
+      - name: debezium-postgres
+        artifacts:
+          - type: tgz
+            url: https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/2.5.0.Final/debezium-connector-postgres-2.5.0.Final-plugin.tar.gz
 
   # Kafka Connect configuration
   config:
